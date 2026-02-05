@@ -1,5 +1,5 @@
 {
-  "name": "agi-mcp-server",
+  "name": "@muah1987/agi-mcp-server",
   "version": "1.0.0",
   "description": "AGI-MCP Server with GOTCHA Framework and ATLAS Process",
   "type": "module",
@@ -22,6 +22,13 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muah1987/AGI-MCP.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
     "better-sqlite3": "^11.0.0",
