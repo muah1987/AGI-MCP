@@ -1,10 +1,10 @@
 # AGI-MCP Validators
 
-Automated quality assurance validators for Claude Code hooks integration.
+Automated quality assurance validators for AGI-MCP hook integration.
 
 ## Overview
 
-These validators integrate with Claude Code's hook system to provide automated quality checks without requiring LLM attention. They implement the GOTCHA framework's philosophy of pushing reliability into deterministic code (Tools layer).
+These validators integrate with AGI-MCP's hook system to provide automated quality checks without requiring LLM attention. They implement the GOTCHA framework's philosophy of pushing reliability into deterministic code (Tools layer).
 
 ## Available Validators
 
@@ -23,7 +23,7 @@ These validators integrate with Claude Code's hook system to provide automated q
       "hooks": [
         {
           "type": "command",
-          "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/validators/ty_validator.py"
+          "command": "$AGI_MCP_PROJECT_DIR/.agi-mcp/hooks/validators/ty_validator.py"
         }
       ]
     }
@@ -55,7 +55,7 @@ These validators integrate with Claude Code's hook system to provide automated q
 
 **Usage**:
 ```bash
-.claude/hooks/validators/validate_new_file.py --directory specs --extension .md
+.agi-mcp/hooks/validators/validate_new_file.py --directory specs --extension .md
 ```
 
 **Features**:
@@ -72,7 +72,7 @@ These validators integrate with Claude Code's hook system to provide automated q
 
 **Usage**:
 ```bash
-.claude/hooks/validators/validate_file_contains.py \
+.agi-mcp/hooks/validators/validate_file_contains.py \
   --directory specs \
   --extension .md \
   --contains "## Task Description" \
@@ -151,15 +151,15 @@ Test validators manually:
 ```bash
 # Prepare test input
 echo '{"tool_input": {"file_path": "test.py"}}' | \
-  .claude/hooks/validators/ty_validator.py
+  .agi-mcp/hooks/validators/ty_validator.py
 
 # Check output (should be valid JSON)
 # Check log file for execution details
-cat .claude/hooks/validators/ty_validator.log
+cat .agi-mcp/hooks/validators/ty_validator.log
 ```
 
 ## See Also
 
-- [Claude Code Hooks Documentation](https://code.claude.com/docs/en/hooks)
-- [AGI-MCP ADVANCED.md](../../../docs/ADVANCED.md) - Hook system details
+- [AGI-MCP Hook System Documentation](../../../docs/ADVANCED.md)
 - [AGI-MCP SKILLS.md](../../../docs/SKILLS.md) - Skill system integration
+- [AGI-MCP ARCHITECTURE.md](../../../docs/ARCHITECTURE.md) - System architecture

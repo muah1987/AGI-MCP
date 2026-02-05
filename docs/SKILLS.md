@@ -156,7 +156,7 @@ Create production-ready auth system that...
 - `validate_new_file.py` - Ensures plan file created in specs/
 - `validate_file_contains.py` - Verifies all required sections present
 
-**Team Member Discovery**: Reads from `.claude/agents/team/*.md` to understand available specialists.
+**Team Member Discovery**: Reads from `.agi-mcp/agents/team/*.md` to understand available specialists.
 
 ### Validation Hooks
 
@@ -165,7 +165,7 @@ The AGI-MCP system includes automated validators for quality assurance:
 #### ty_validator.py
 **Purpose**: Type checking validator for Python files using the `ty` tool
 
-**Integration**: Claude Code PostToolUse hook - runs after Python file edits/writes
+**Integration**: AGI-MCP PostToolUse hook - runs after Python file edits/writes
 
 **GOTCHA Framework Integration**:
 - Pushes reliability into deterministic code (Tools layer)
@@ -182,7 +182,7 @@ The AGI-MCP system includes automated validators for quality assurance:
 - Success: `{}` (allows completion)
 - Failure: `{"decision": "block", "reason": "<type errors>"}` (blocks and shows errors)
 
-**Logging**: Creates `ty_validator.log` in `.claude/hooks/validators/` for debugging
+**Logging**: Creates `ty_validator.log` in `.agi-mcp/hooks/validators/` for debugging
 
 **Example Hook Configuration**:
 ```json
@@ -193,7 +193,7 @@ The AGI-MCP system includes automated validators for quality assurance:
       "hooks": [
         {
           "type": "command",
-          "command": ".claude/hooks/validators/ty_validator.py"
+          "command": ".agi-mcp/hooks/validators/ty_validator.py"
         }
       ]
     }

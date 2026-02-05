@@ -8,12 +8,12 @@ hooks:
     - hooks:
         - type: command
           command: >-
-            $HOME/.local/bin/uv run $CLAUDE_PROJECT_DIR/.claude/hooks/validators/validate_new_file.py
+            $HOME/.local/bin/uv run $AGI_MCP_PROJECT_DIR/.agi-mcp/hooks/validators/validate_new_file.py
             --directory specs
             --extension .md
         - type: command
           command: >-
-            $HOME/.local/bin/uv run $CLAUDE_PROJECT_DIR/.claude/hooks/validators/validate_file_contains.py
+            $HOME/.local/bin/uv run $AGI_MCP_PROJECT_DIR/.agi-mcp/hooks/validators/validate_file_contains.py
             --directory specs
             --extension .md
             --contains '## Task Description'
@@ -34,7 +34,7 @@ Create a detailed implementation plan based on the user's requirements provided 
 USER_PROMPT: $1
 ORCHESTRATION_PROMPT: $2 - (Optional) Guidance for team assembly, task structure, and execution strategy
 PLAN_OUTPUT_DIRECTORY: `specs/`
-TEAM_MEMBERS: `.claude/agents/team/*.md`
+TEAM_MEMBERS: `.agi-mcp/agents/team/*.md`
 GENERAL_PURPOSE_AGENT: `general-purpose`
 
 ## Instructions
@@ -59,7 +59,7 @@ GENERAL_PURPOSE_AGENT: `general-purpose`
    - Determine success criteria
 
 2. **Analyze Team Capabilities**
-   - Read available team member profiles from `.claude/agents/team/*.md`
+   - Read available team member profiles from `.agi-mcp/agents/team/*.md`
    - Map required skills to available specialists
    - Identify if general-purpose agent is needed
 

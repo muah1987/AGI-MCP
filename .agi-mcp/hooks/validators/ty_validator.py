@@ -2,7 +2,7 @@
 # Note: This script uses uv for dependency management when available
 # Falls back to system Python if uv is not installed
 """
-Type Checker Validator for Claude Code PostToolUse Hook
+Type Checker Validator for AGI-MCP PostToolUse Hook
 
 Runs `uvx ty check <file_path>` for type checking on single Python files.
 
@@ -11,11 +11,11 @@ GOTCHA Framework Integration:
 - Enforces type safety without requiring LLM attention
 - Implements guardrails for consistent Python typing
 
-Outputs JSON decision for Claude Code PostToolUse hook:
+Outputs JSON decision for AGI-MCP PostToolUse hook:
 - {"decision": "block", "reason": "..."} to block and retry
 - {} to allow completion
 
-See CLAUDE.md for full GOTCHA framework documentation.
+See docs/ARCHITECTURE.md for full GOTCHA framework documentation.
 """
 import json
 import logging

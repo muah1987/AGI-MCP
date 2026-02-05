@@ -14,7 +14,7 @@ def main():
     args = parser.parse_args()
     
     # Get the project directory
-    project_dir = os.environ.get('CLAUDE_PROJECT_DIR', os.getcwd())
+    project_dir = os.environ.get('AGI_MCP_PROJECT_DIR', os.getcwd())
     target_dir = os.path.join(project_dir, args.directory)
     
     # Check if directory exists
