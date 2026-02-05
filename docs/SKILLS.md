@@ -158,6 +158,249 @@ Create production-ready auth system that...
 
 **Team Member Discovery**: Reads from `.claude/agents/team/*.md` to understand available specialists.
 
+#### 6. build ✨ NEW
+**Purpose**: Implements a plan from a specification file
+
+**Features**:
+- Reads and executes implementation plans
+- Follows step-by-step instructions systematically
+- Implements all required files and modifications
+- Tests implementations during execution
+- Validates acceptance criteria
+- Reports completed work
+
+**Usage**:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "build",
+    "context": {
+      "path_to_plan": "specs/user-authentication.md"
+    }
+  }
+}
+```
+
+**Workflow**:
+1. Reads plan from specified path
+2. Analyzes requirements and approach
+3. Implements each task systematically
+4. Tests as implementation progresses
+5. Ensures acceptance criteria met
+6. Documents any deviations
+7. Presents completion report
+
+**Output**: Implements the plan and presents a completion report summarizing created/modified files and confirming acceptance criteria.
+
+#### 7. plan (Quick Plan) ✨ NEW
+**Purpose**: Creates concise engineering implementation plans based on user requirements
+
+**Features**:
+- Analyzes user requirements without team coordination overhead
+- Determines task type and complexity automatically
+- Provides detailed technical approach
+- Includes conditional sections based on task type
+- Generates descriptive kebab-case filenames
+- Saves to `specs/` directory
+
+**Plan Includes**:
+- Task Description and Context
+- Type (chore|feature|refactor|fix|enhancement) and Complexity (simple|medium|complex)
+- Objective and Technical Approach
+- Relevant Files with specific changes
+- Step by Step Tasks (numbered and ordered)
+- Acceptance Criteria (specific and measurable)
+- Testing Strategy
+- Potential Risks
+
+**Conditional Sections**:
+- **Complex Tasks**: Architecture Decisions, Performance Considerations, Rollback Plan
+- **Features**: User Impact, Migration Steps
+- **Fixes**: Root Cause Analysis, Prevention Measures
+- **Refactors**: Before/After Comparison, Breaking Changes
+
+**Usage**:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "plan",
+    "context": {
+      "user_prompt": "Add rate limiting to API endpoints"
+    }
+  }
+}
+```
+
+**Output**: Creates `specs/add-rate-limiting-to-api.md` with complete implementation blueprint.
+
+**Best Practices**:
+- Uses clear, action-oriented language
+- Numbers tasks in logical order
+- Includes file paths and specific line numbers
+- References existing code patterns
+- Documents assumptions explicitly
+- Specifies exact commands and configuration
+
+#### 8. github ✨ NEW
+**Purpose**: Comprehensive GitHub operations using the full GitHub MCP tools suite
+
+**Capabilities**:
+- **Repository Search**: Find repositories by language, stars, topics
+- **Code Search**: Search across all GitHub repositories
+- **Issue Management**: List, read, search issues and comments
+- **Pull Requests**: List, search, review PRs with diffs and status
+- **Commits**: List commits, get details with diffs
+- **Branches/Tags**: List and get details
+- **Releases**: Manage releases and versions
+- **GitHub Actions**: List workflows, runs, jobs, and logs
+- **Security**: Code scanning and secret scanning alerts
+- **User Search**: Find GitHub users and organizations
+
+**Usage Examples**:
+
+Search repositories:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "github",
+    "context": {
+      "operation": "search_repositories",
+      "parameters": {
+        "query": "language:typescript mcp server",
+        "sort": "stars"
+      }
+    }
+  }
+}
+```
+
+Get PR diff:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "github",
+    "context": {
+      "operation": "pull_request_read",
+      "parameters": {
+        "owner": "anthropics",
+        "repo": "mcp",
+        "pullNumber": 42,
+        "method": "get_diff"
+      }
+    }
+  }
+}
+```
+
+Check workflow status:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "github",
+    "context": {
+      "operation": "actions_list",
+      "parameters": {
+        "owner": "myorg",
+        "repo": "myrepo",
+        "method": "list_workflow_runs"
+      }
+    }
+  }
+}
+```
+
+**Available Operations**: 30+ GitHub operations covering all major GitHub functionality.
+
+**Best Practices**:
+- Use specific queries to narrow results
+- Leverage pagination for large result sets
+- Handle rate limits gracefully
+- Combine operations for complex workflows
+
+#### 9. playwright ✨ NEW
+**Purpose**: Browser automation and web testing using Playwright
+
+**Capabilities**:
+- **Navigation**: Go to URLs, navigate back, manage tabs
+- **Page Inspection**: Snapshots, screenshots, console messages, network requests
+- **Element Interaction**: Click, hover, type, press keys
+- **Form Operations**: Fill forms, select options, upload files
+- **Advanced**: Drag-and-drop, JavaScript evaluation, dialog handling
+- **Waiting**: Wait for text, elements, or time delays
+
+**Common Workflows**:
+
+Login automation:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "playwright",
+    "context": {
+      "action": "navigate",
+      "parameters": {"url": "https://app.example.com/login"}
+    }
+  }
+}
+```
+
+Then fill form and submit:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "playwright",
+    "context": {
+      "action": "fill_form",
+      "parameters": {
+        "fields": [
+          {"name": "email", "type": "textbox", "ref": "input-1", "value": "test@example.com"},
+          {"name": "password", "type": "textbox", "ref": "input-2", "value": "password"}
+        ]
+      }
+    }
+  }
+}
+```
+
+Web scraping:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "playwright",
+    "context": {
+      "action": "evaluate",
+      "parameters": {
+        "function": "() => Array.from(document.querySelectorAll('.item')).map(el => el.textContent)"
+      }
+    }
+  }
+}
+```
+
+**Use Cases**:
+- Automated login and authentication testing
+- Form validation testing
+- Web scraping and data extraction
+- UI/UX testing
+- Screenshot capture for documentation
+- Network monitoring and API verification
+
+**Best Practices**:
+- Always snapshot before interacting with elements
+- Use descriptive element names for debugging
+- Wait appropriately for dynamic content
+- Take screenshots for visual confirmation
+- Check console messages for JavaScript errors
+- Monitor network for API validation
+- Clean up by closing browser when done
+
 ## MCP Tools
 
 **Capabilities**:
