@@ -105,6 +105,8 @@ docker-compose build
 
 ### Publishing to Docker Hub
 
+#### Manual Publishing
+
 ```bash
 # 1. Create .env file with your credentials
 cp .env.example .env
@@ -113,6 +115,25 @@ cp .env.example .env
 # 2. Build and push to Docker Hub
 ./push-docker.sh
 ```
+
+#### Automated Publishing with GitHub Actions
+
+The repository includes a GitHub Actions workflow that automatically builds and pushes Docker images to DockerHub on every push to the main branch or when a tag is created.
+
+**Setup:**
+
+1. Add the following secrets to your GitHub repository settings:
+   - `DOCKER_LOGIN` - Your DockerHub username
+   - `DOCKER_PASSWORD` - Your DockerHub password or access token
+
+2. The workflow will automatically:
+   - Build the Docker image using the Dockerfile
+   - Tag it with `latest` and the version from `package.json`
+   - Push it to DockerHub under `$DOCKER_LOGIN/agi-mcp` (where `$DOCKER_LOGIN` is your DockerHub username)
+
+**Manual Trigger:**
+
+You can also trigger the workflow manually from the Actions tab in GitHub.
 
 ## 🚀 Quick Start
 
