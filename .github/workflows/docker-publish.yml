@@ -27,20 +27,27 @@ jobs:
         run: |
           # Validate required secrets
           DOCKER_USERNAME="${{ secrets.DOCKER_LOGIN }}"
+          DOCKER_PASSWORD="${{ secrets.DOCKER_PASSWORD }}"
+          
           if [ -z "$DOCKER_USERNAME" ]; then
             echo "Error: DOCKER_LOGIN secret is not set"
             exit 1
           fi
           
-          # Extract version from package.json using jq for reliable parsing
-          VERSION=$(jq -r '.version' package.json)
+          if [ -z "$DOCKER_PASSWORD" ]; then
+            echo "Error: DOCKER_PASSWORD secret is not set"
+            exit 1
+          fi
+          
+          # Extract version from package.json using Node.js for reliable parsing
+          VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           
           # Determine Docker tags
           TAGS="${DOCKER_USERNAME}/${IMAGE_NAME}:latest"
           
           # Add version tag if available
-          if [ -n "$VERSION" ] && [ "$VERSION" != "null" ]; then
+          if [ -n "$VERSION" ] && [ "$VERSION" != "null" ] && [ "$VERSION" != "undefined" ]; then
             TAGS="${TAGS},${DOCKER_USERNAME}/${IMAGE_NAME}:${VERSION}"
           fi
           

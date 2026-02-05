@@ -129,7 +129,7 @@ The repository includes a GitHub Actions workflow that automatically builds and 
 2. The workflow will automatically:
    - Build the Docker image using the Dockerfile
    - Tag it with `latest` and the version from `package.json`
-   - Push it to DockerHub under `<your-username>/agi-mcp`
+   - Push it to DockerHub under `$DOCKER_LOGIN/agi-mcp` (where `$DOCKER_LOGIN` is your DockerHub username)
 
 **Manual Trigger:**
 
