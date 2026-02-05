@@ -1,60 +1,102 @@
-# AGI-MCP Server
+# AGI-MCP: Advanced General Intelligence Model Context Protocol Server
 
-A comprehensive Model Context Protocol (MCP) server that implements AGI-like capabilities using the **GOTCHA Framework** and **ATLAS Process**, with integrated database memory for persistent state management.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
 
-## Features
+A comprehensive Model Context Protocol (MCP) server implementing AGI-like capabilities through the **GOTCHA Framework**, **ATLAS Process**, **Thinking Mechanism**, **Hook System**, and **Subagent Architecture** with integrated database memory for persistent state management.
+
+## 🌟 Features
 
 ### 🎯 GOTCHA Framework (6-Layer Architecture)
-A sophisticated 6-layer architecture for agentic systems:
+A sophisticated cognitive architecture for agentic systems:
 
-1. **Goals (G)** - Define and manage objectives and intentions
+1. **Goals (G)** - Define and manage objectives with priorities
 2. **Observations (O)** - Perceive and record environmental state
 3. **Thoughts (T)** - Reason and plan based on observations
-4. **Commands (C)** - Select and execute actions
-5. **Hypotheses (H)** - Form predictions about outcomes
-6. **Assessments (A)** - Evaluate performance and learn
+4. **Commands (C)** - Select and execute actions systematically
+5. **Hypotheses (H)** - Form and validate predictions
+6. **Assessments (A)** - Evaluate performance and capture learnings
 
 ### 🗺️ ATLAS Process (5-Step Methodology)
-A structured 5-step process for task execution:
+Structured task execution methodology:
 
-1. **Analyze (A)** - Understand the task and context
+1. **Analyze (A)** - Understand task context and complexity
 2. **Task Breakdown (T)** - Decompose into manageable subtasks
 3. **Learn (L)** - Gather necessary knowledge and resources
-4. **Act (A)** - Execute the planned actions
-5. **Synthesize (S)** - Integrate results and learnings
+4. **Act (A)** - Execute planned actions systematically
+5. **Synthesize (S)** - Integrate results and extract insights
+
+### 🧠 Thinking Mechanism
+Intelligent reasoning and filtering layer:
+
+- **Prompt Evaluation** - Assesses relevance and safety of user inputs
+- **Tool Use Validation** - Evaluates appropriateness of tool execution
+- **Completion Assessment** - Determines when work is truly complete
+- **Purpose-Based Filtering** - Aligns all actions with agent purpose
+
+### 🔗 Hook System
+Claude Code-style lifecycle hooks for customization:
+
+- **11 Hook Events** - SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, SubagentStart/Stop, and more
+- **Command & Prompt Hooks** - Both shell command and LLM-based evaluation
+- **Decision Control** - Allow, deny, or modify operations dynamically
+- **Context Injection** - Add information at key lifecycle points
+
+### 🤖 Subagent System
+Specialized AI assistants for focused tasks:
+
+- **4 Built-in Subagents** - Explore, General-Purpose, Task-Executor, Code-Reviewer
+- **Custom Subagents** - Create project or user-level specialists
+- **Isolated Contexts** - Each subagent has its own memory and permissions
+- **Tool Restrictions** - Fine-grained control over subagent capabilities
+- **Resumable Sessions** - Continue previous subagent work
 
 ### 💾 Database Integration
-- **SQLite Database** - Serves as the source of truth for all operations
-- **Persistent Memory** - All goals, observations, thoughts, commands, hypotheses, and assessments are stored
-- **Session Tracking** - Complete session history and analytics
-- **ATLAS History** - Full trace of task execution through all 5 steps
+Persistent memory as source of truth:
 
-### 🧠 Memory Infrastructure
-On first session in a new environment, the system automatically:
-- Checks if `memory/MEMORY.md` exists
-- Creates directory structure: `memory/logs` and `data`
-- Initializes database schema
-- Sets up logging infrastructure
+- **SQLite Database** - All operations persisted
+- **Session Tracking** - Complete history and analytics
+- **ATLAS History** - Full execution traces
+- **Query Optimization** - Indexed for performance
 
-## Installation
+### 🏗️ Memory Infrastructure
+Automatic initialization and management:
+
+- **Auto-Detection** - Checks for existing infrastructure
+- **Directory Creation** - `memory/logs` and `data` structures
+- **Schema Initialization** - Database setup on first run
+- **Logging System** - Comprehensive session logs
+
+## 📦 Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/muah1987/AGI-MCP.git
+cd AGI-MCP
+
+# Install dependencies
 npm install
+
+# Build the project
 npm run build
+
+# Run tests
+npm test
 ```
 
-## Usage
+## 🚀 Quick Start
 
 ### As MCP Server
 
-Add to your MCP client configuration:
+Add to your MCP client configuration (e.g., Claude Desktop, Cline):
 
 ```json
 {
   "mcpServers": {
     "agi-mcp": {
       "command": "node",
-      "args": ["/path/to/AGI-MCP/dist/index.js"]
+      "args": ["/absolute/path/to/AGI-MCP/dist/index.js"]
     }
   }
 }
@@ -66,126 +108,153 @@ Add to your MCP client configuration:
 npm start
 ```
 
-## Available Tools
+### First Session
 
-### GOTCHA Framework Tools
+On first run, AGI-MCP automatically:
+1. Creates `memory/MEMORY.md` documentation
+2. Sets up `memory/logs/` directory
+3. Creates `data/` directory
+4. Initializes SQLite database
+5. Loads all subagents
+6. Configures hook system
 
-- **set_goal** - Define a new goal for the AGI system
-- **observe** - Record an observation about the environment
-- **think** - Record a thought or reasoning process
-- **execute_command** - Execute a command and record it
-- **form_hypothesis** - Form a hypothesis about expected outcomes
-- **assess_performance** - Assess performance and record learnings
-- **process_goal_with_gotcha** - Process a goal through all GOTCHA layers
+## 🛠️ Available Tools
 
-### ATLAS Process Tools
+### GOTCHA Framework (7 tools)
+- `set_goal` - Define system objectives
+- `observe` - Record environmental observations
+- `think` - Capture reasoning processes
+- `execute_command` - Execute and log commands
+- `form_hypothesis` - Create predictions
+- `assess_performance` - Evaluate and learn
+- `process_goal_with_gotcha` - Full cycle processing
 
-- **execute_atlas_task** - Execute a complete task using the 5-step ATLAS process
-- **get_atlas_history** - Retrieve ATLAS process history for a specific task
+### ATLAS Process (2 tools)
+- `execute_atlas_task` - Run complete 5-step process
+- `get_atlas_history` - View task execution history
 
-### Memory Tools
+### Memory Management (3 tools)
+- `get_active_goals` - List active objectives
+- `get_memory` - Query memory by layer
+- `get_session_summary` - Session overview
 
-- **get_active_goals** - Retrieve all active goals from memory
-- **get_memory** - Retrieve memory entries by layer
-- **get_session_summary** - Get a summary of the current session
+### Subagent Management (3 tools)
+- `execute_subagent` - Delegate to specialist
+- `resume_subagent` - Continue previous work
+- `list_subagents` - View available subagents
 
-## Architecture
+## 📚 Documentation
+
+- **[ADVANCED.md](ADVANCED.md)** - Thinking Mechanism, Hooks, and Subagents
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture and design
+- **[USAGE.md](USAGE.md)** - Comprehensive usage guide with examples
+- **[QUICKREF.md](QUICKREF.md)** - Quick reference for developers
+- **[docs/AGENTS.md](docs/AGENTS.md)** - Subagent documentation
+- **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)** - Quickstart guide
+- **[docs/API.md](docs/API.md)** - API documentation
+
+## 🏗️ Architecture
 
 ```
 AGI-MCP/
 ├── src/
-│   ├── index.ts              # Main MCP server
+│   ├── index.ts                 # Main MCP server
 │   ├── database/
-│   │   ├── memory-db.ts      # Database layer
-│   │   └── infrastructure.ts  # Memory infrastructure initialization
+│   │   ├── memory-db.ts         # SQLite operations
+│   │   └── infrastructure.ts     # Auto-initialization
 │   ├── gotcha/
-│   │   └── framework.ts      # GOTCHA Framework implementation
+│   │   ├── framework.ts         # GOTCHA 6-layer system
+│   │   └── thinking.ts          # Thinking mechanism
 │   ├── atlas/
-│   │   └── process.ts        # ATLAS Process implementation
+│   │   └── process.ts           # ATLAS 5-step process
+│   ├── hooks/
+│   │   └── hook-system.ts       # Lifecycle hooks
+│   ├── subagents/
+│   │   └── subagent-system.ts   # Subagent management
 │   └── tools/
-│       └── mcp-tools.ts      # MCP tool definitions and handlers
-├── memory/
-│   ├── MEMORY.md             # Memory system documentation
-│   └── logs/                 # Session logs
-├── data/
-│   └── agi-mcp.db           # SQLite database (created on first run)
-└── package.json
+│       └── mcp-tools.ts         # MCP tool definitions
+├── memory/                      # Memory system
+│   ├── MEMORY.md               # Documentation
+│   └── logs/                   # Session logs
+├── data/                       # Database storage
+│   └── agi-mcp.db             # SQLite database
+└── .agi-mcp/                  # Configuration
+    ├── hooks/                  # Hook scripts
+    ├── subagents/             # Custom subagents
+    └── hooks-config.json      # Hook configuration
 ```
 
-## Example: Using the ATLAS Process
+## 💡 Examples
 
-```javascript
-// Through MCP tool call
+### Execute ATLAS Task
+```typescript
+await tools.handleToolCall('execute_atlas_task', {
+  task_id: 'research-001',
+  description: 'Research quantum computing applications'
+});
+```
+
+### Use Subagent
+```typescript
+await tools.handleToolCall('execute_subagent', {
+  subagent: 'code-reviewer',
+  task: 'Review authentication module for security'
+});
+```
+
+### Configure Hook
+```json
 {
-  "name": "execute_atlas_task",
-  "arguments": {
-    "task_id": "task-001",
-    "description": "Analyze user query and provide comprehensive response"
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "execute_command",
+      "hooks": [{
+        "type": "command",
+        "command": "./validate-command.sh"
+      }]
+    }]
   }
 }
 ```
 
-The ATLAS process will:
-1. **Analyze** the task and assess complexity
-2. **Break down** the task into subtasks
-3. **Learn** by gathering required knowledge
-4. **Act** by executing each subtask
-5. **Synthesize** results and capture learnings
+## 🧪 Testing
 
-## Example: Using the GOTCHA Framework
-
-```javascript
-// Set a goal
-{
-  "name": "set_goal",
-  "arguments": {
-    "goal": "Understand user requirements",
-    "priority": 8
-  }
-}
-
-// Process the goal through all layers
-{
-  "name": "process_goal_with_gotcha",
-  "arguments": {
-    "goal": "Understand user requirements",
-    "priority": 8
-  }
-}
-```
-
-## Database Schema
-
-The system maintains several tables:
-- `goals` - Goal definitions and status
-- `observations` - Environmental observations
-- `thoughts` - Reasoning processes
-- `commands` - Executed commands
-- `hypotheses` - Predictions and validations
-- `assessments` - Performance evaluations
-- `atlas_steps` - ATLAS process execution history
-- `memory` - Cross-layer memory entries
-- `sessions` - Session tracking
-
-## Development
-
-### Build
 ```bash
+# Run all tests
+npm test
+
+# Build project
 npm run build
 ```
 
-### Project Structure
-The codebase follows a modular architecture:
-- **Database Layer** - Handles all persistence
-- **GOTCHA Layer** - Implements the 6-layer framework
-- **ATLAS Layer** - Implements the 5-step process
-- **Tools Layer** - Exposes MCP tools
-- **Server Layer** - MCP server implementation
+## 🤝 Contributing
 
-## License
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-MIT
+## 📄 License
 
-## Contributing
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Contributions are welcome! This is a comprehensive AGI-oriented MCP server that can be extended with additional tools and capabilities.
+## 🔒 Security
+
+See [SECURITY.md](SECURITY.md) for security policies and reporting vulnerabilities.
+
+## 📝 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and changes.
+
+## 🙏 Acknowledgments
+
+- Model Context Protocol by Anthropic
+- Inspired by AGI principles and cognitive architectures
+- Built with TypeScript and SQLite
+
+## 📧 Support
+
+- Create an [Issue](https://github.com/muah1987/AGI-MCP/issues)
+- Read the [Documentation](docs/)
+- Check [Discussions](https://github.com/muah1987/AGI-MCP/discussions)
+
+---
+
+**AGI-MCP** - Building towards Artificial General Intelligence through Model Context Protocol
