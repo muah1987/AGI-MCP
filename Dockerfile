@@ -12,7 +12,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 # Copy source code
 COPY src ./src
@@ -28,7 +28,7 @@ WORKDIR /app
 
 # Install production dependencies only
 COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 # Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
