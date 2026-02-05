@@ -158,6 +158,49 @@ Create production-ready auth system that...
 
 **Team Member Discovery**: Reads from `.claude/agents/team/*.md` to understand available specialists.
 
+### Validation Hooks
+
+The AGI-MCP system includes automated validators for quality assurance:
+
+#### ty_validator.py
+**Purpose**: Type checking validator for Python files using the `ty` tool
+
+**Integration**: Claude Code PostToolUse hook - runs after Python file edits/writes
+
+**GOTCHA Framework Integration**:
+- Pushes reliability into deterministic code (Tools layer)
+- Enforces type safety without requiring LLM attention
+- Implements guardrails for consistent Python typing
+
+**Behavior**:
+- Runs `uvx ty check <file_path>` on edited Python files
+- Blocks completion if type errors found
+- Provides detailed error messages for correction
+- Gracefully degrades if `ty` tool not available
+
+**Output**:
+- Success: `{}` (allows completion)
+- Failure: `{"decision": "block", "reason": "<type errors>"}` (blocks and shows errors)
+
+**Logging**: Creates `ty_validator.log` in `.claude/hooks/validators/` for debugging
+
+**Example Hook Configuration**:
+```json
+{
+  "PostToolUse": [
+    {
+      "matcher": "Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": ".claude/hooks/validators/ty_validator.py"
+        }
+      ]
+    }
+  ]
+}
+```
+
 #### 6. build ✨ NEW
 **Purpose**: Implements a plan from a specification file
 
