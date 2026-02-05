@@ -188,6 +188,8 @@ export class HookSystem {
     if (!hook.prompt || !this.thinking) return null;
 
     // Replace $ARGUMENTS placeholder with input JSON
+    // Note: Currently uses thinking mechanism's built-in evaluation methods.
+    // evaluationPrompt available for future custom prompt-based evaluations.
     const evaluationPrompt = hook.prompt.replace('$ARGUMENTS', JSON.stringify(input, null, 2));
 
     console.log(`[Hooks] Executing prompt-based hook with thinking mechanism`);
