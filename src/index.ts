@@ -11,15 +11,23 @@ import {
 import { MemoryDatabase } from './database/memory-db.js';
 import { MemoryInfrastructure } from './database/infrastructure.js';
 import { GOTCHAFramework } from './gotcha/framework.js';
+import { ThinkingMechanism } from './gotcha/thinking.js';
 import { ATLASProcess } from './atlas/process.js';
 import { MCPTools } from './tools/mcp-tools.js';
+import { SubagentSystem } from './subagents/subagent-system.js';
+import { SkillSystem } from './skills/skill-system.js';
+import { HookSystem } from './hooks/hook-system.js';
 
 /**
  * AGI-MCP Server
  * 
  * A comprehensive MCP server implementing:
- * - GOTCHA Framework (6-layer architecture for agentic systems)
- * - ATLAS Process (5-step process for task execution)
+ * - GOTCHA Framework (6-layer cognitive architecture)
+ * - ATLAS Process (5-step systematic execution)
+ * - Thinking Mechanism (intelligent reasoning and filtering)
+ * - Hook System (11 lifecycle events with customization)
+ * - Subagent System (specialized AI assistants)
+ * - Skill System (orchestration and automation)
  * - Database integration (SQLite as source of truth)
  * - Memory infrastructure management
  */
@@ -28,7 +36,11 @@ class AGIMCPServer {
   private server: Server;
   private db: MemoryDatabase;
   private gotcha: GOTCHAFramework;
+  private thinking: ThinkingMechanism;
   private atlas: ATLASProcess;
+  private subagents: SubagentSystem;
+  private skills: SkillSystem;
+  private hooks: HookSystem;
   private tools: MCPTools;
   private infrastructure: MemoryInfrastructure;
   private sessionId: number | null = null;
@@ -44,11 +56,35 @@ class AGIMCPServer {
     // Initialize GOTCHA Framework
     this.gotcha = new GOTCHAFramework(this.db);
 
+    // Initialize Thinking Mechanism
+    this.thinking = new ThinkingMechanism(
+      this.db,
+      this.gotcha,
+      {
+        purpose: 'AGI-MCP Server providing comprehensive AGI-like capabilities through MCP interface',
+        constraints: ['Maintain data integrity', 'Ensure security', 'Provide accurate information'],
+        priorities: ['User satisfaction', 'Task completion', 'System reliability'],
+        currentGoals: [],
+        recentObservations: []
+      }
+    );
+
     // Initialize ATLAS Process
     this.atlas = new ATLASProcess(this.db, this.gotcha);
 
+    // Initialize Subagent System
+    this.subagents = new SubagentSystem(this.db, process.cwd());
+    this.subagents.loadSubagents();
+
+    // Initialize Skill System
+    this.skills = new SkillSystem(this.db, this.subagents, this.thinking, process.cwd());
+    this.skills.loadSkills();
+
+    // Initialize Hook System (with empty config for now - can be configured via .agi-mcp/hooks.json)
+    this.hooks = new HookSystem({}, String(Date.now()), process.cwd());
+
     // Initialize MCP Tools
-    this.tools = new MCPTools(this.db, this.gotcha, this.atlas);
+    this.tools = new MCPTools(this.db, this.gotcha, this.atlas, this.skills, this.subagents);
 
     // Initialize MCP Server
     this.server = new Server(
@@ -67,13 +103,21 @@ class AGIMCPServer {
     this.startSession();
   }
 
-  private startSession(): void {
+  private async startSession(): Promise<void> {
     this.sessionId = this.db.startSession();
     console.log(`[AGI-MCP] Session started: ${this.sessionId}`);
     
     // Log session start in GOTCHA framework
     this.gotcha.observe('AGI-MCP Server session started', 'system');
     this.gotcha.defineGoal('Provide AGI-like capabilities through MCP interface', 10);
+    
+    console.log('[AGI-MCP] All systems initialized:');
+    console.log(`  - GOTCHA Framework: ✓`);
+    console.log(`  - ATLAS Process: ✓`);
+    console.log(`  - Thinking Mechanism: ✓`);
+    console.log(`  - Subagent System: ${this.subagents.listSubagents().length} agents loaded`);
+    console.log(`  - Skill System: ${this.skills.listSkills().length} skills loaded`);
+    console.log(`  - Hook System: ✓`);
   }
 
   private setupHandlers(): void {

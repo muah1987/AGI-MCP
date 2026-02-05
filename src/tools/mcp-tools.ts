@@ -1,21 +1,33 @@
 import { MemoryDatabase } from '../database/memory-db.js';
 import { GOTCHAFramework } from '../gotcha/framework.js';
 import { ATLASProcess, ATLASTask } from '../atlas/process.js';
+import { SkillSystem } from '../skills/skill-system.js';
+import { SubagentSystem } from '../subagents/subagent-system.js';
 
 /**
  * MCP Tools - Comprehensive toolset for AGI-like operations
- * These tools integrate GOTCHA Framework and ATLAS Process
+ * These tools integrate GOTCHA Framework, ATLAS Process, Skills, and Subagents
  */
 
 export class MCPTools {
   private db: MemoryDatabase;
   private gotcha: GOTCHAFramework;
   private atlas: ATLASProcess;
+  private skills?: SkillSystem;
+  private subagents?: SubagentSystem;
 
-  constructor(db: MemoryDatabase, gotcha: GOTCHAFramework, atlas: ATLASProcess) {
+  constructor(
+    db: MemoryDatabase, 
+    gotcha: GOTCHAFramework, 
+    atlas: ATLASProcess,
+    skills?: SkillSystem,
+    subagents?: SubagentSystem
+  ) {
     this.db = db;
     this.gotcha = gotcha;
     this.atlas = atlas;
+    this.skills = skills;
+    this.subagents = subagents;
   }
 
   // Memory tools
@@ -158,6 +170,54 @@ export class MCPTools {
           type: 'object',
           properties: {}
         }
+      },
+      {
+        name: 'execute_skill',
+        description: 'Execute a skill to orchestrate subagents and automate complex workflows. Skills can route tasks to specialized agents and coordinate multi-step processes.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            skill_name: { type: 'string', description: 'Name of the skill to execute (e.g., problem-solver, atlas-orchestrator, gotcha-coordinator)' },
+            context: { 
+              type: 'object', 
+              description: 'Context for skill execution including task description, priority, and any relevant data',
+              properties: {
+                description: { type: 'string', description: 'Task or problem description' },
+                task: { type: 'string', description: 'Specific task details' },
+                priority: { type: 'number', description: 'Priority level (1-10)' }
+              }
+            }
+          },
+          required: ['skill_name']
+        }
+      },
+      {
+        name: 'list_skills',
+        description: 'List all available skills with their descriptions and capabilities',
+        inputSchema: {
+          type: 'object',
+          properties: {}
+        }
+      },
+      {
+        name: 'execute_subagent',
+        description: 'Execute a specific subagent for specialized tasks. Subagents are isolated AI assistants with specific capabilities.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            subagent_name: { type: 'string', description: 'Name of subagent (e.g., debug-engineer, architect, document-writer, network-engineer, product-developer, ui-ux-specialist, code-reviewer)' },
+            task: { type: 'object', description: 'Task details including prompt and context' }
+          },
+          required: ['subagent_name', 'task']
+        }
+      },
+      {
+        name: 'list_subagents',
+        description: 'List all available subagents with their descriptions and specializations',
+        inputSchema: {
+          type: 'object',
+          properties: {}
+        }
       }
     ];
   }
@@ -188,6 +248,15 @@ export class MCPTools {
       case 'process_goal_with_gotcha':
         return this.handleProcessGoalWithGOTCHA(args);
       case 'get_session_summary':
+        return this.handleGetSessionSummary();
+      case 'execute_skill':
+        return this.handleExecuteSkill(args);
+      case 'list_skills':
+        return this.handleListSkills();
+      case 'execute_subagent':
+        return this.handleExecuteSubagent(args);
+      case 'list_subagents':
+        return this.handleListSubagents();
         return this.handleGetSessionSummary();
       default:
         throw new Error(`Unknown tool: ${name}`);
@@ -314,6 +383,92 @@ export class MCPTools {
         },
         timestamp: new Date().toISOString()
       }
+    };
+  }
+
+  private async handleExecuteSkill(args: any) {
+    if (!this.skills) {
+      throw new Error('Skill system not initialized');
+    }
+
+    try {
+      const result = await this.skills.executeSkill(args.skill_name, args.context || {});
+      return {
+        success: true,
+        skill: args.skill_name,
+        result: result,
+        message: `Skill executed: ${args.skill_name}`
+      };
+    } catch (error) {
+      return {
+        success: false,
+        skill: args.skill_name,
+        error: error instanceof Error ? error.message : String(error),
+        message: `Skill execution failed: ${args.skill_name}`
+      };
+    }
+  }
+
+  private async handleListSkills() {
+    if (!this.skills) {
+      throw new Error('Skill system not initialized');
+    }
+
+    const skills = this.skills.listSkills();
+    return {
+      success: true,
+      skills: skills.map(skill => ({
+        name: skill.name,
+        description: skill.description,
+        context: skill.context,
+        model: skill.model,
+        subagents: skill.subagents,
+        hasTriggers: (skill.triggers && skill.triggers.length > 0) || false
+      })),
+      count: skills.length
+    };
+  }
+
+  private async handleExecuteSubagent(args: any) {
+    if (!this.subagents) {
+      throw new Error('Subagent system not initialized');
+    }
+
+    try {
+      const result = await this.subagents.executeTask(args.subagent_name, args.task);
+      return {
+        success: true,
+        subagent: args.subagent_name,
+        result: result,
+        message: `Subagent executed: ${args.subagent_name}`
+      };
+    } catch (error) {
+      return {
+        success: false,
+        subagent: args.subagent_name,
+        error: error instanceof Error ? error.message : String(error),
+        message: `Subagent execution failed: ${args.subagent_name}`
+      };
+    }
+  }
+
+  private async handleListSubagents() {
+    if (!this.subagents) {
+      throw new Error('Subagent system not initialized');
+    }
+
+    const subagents = this.subagents.listSubagents();
+    return {
+      success: true,
+      subagents: subagents.map(agent => ({
+        name: agent.name,
+        description: agent.description,
+        model: agent.model,
+        tools: agent.tools,
+        disallowedTools: agent.disallowedTools,
+        color: agent.color
+      })),
+      count: subagents.length
     };
   }
 }
