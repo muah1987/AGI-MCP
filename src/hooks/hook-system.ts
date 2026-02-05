@@ -141,10 +141,9 @@ export class HookSystem {
     if (!hook.command) return null;
 
     const timeout = hook.timeout || 60000;
-    const inputJson = JSON.stringify(input);
 
     try {
-      const { stdout, stderr } = await execAsync(hook.command, {
+      const { stdout } = await execAsync(hook.command, {
         timeout,
         env: {
           ...process.env,
@@ -188,8 +187,8 @@ export class HookSystem {
   private async executePromptHook(hook: Hook, input: HookInput): Promise<HookOutput | null> {
     if (!hook.prompt || !this.thinking) return null;
 
-    // Replace $ARGUMENTS placeholder
-    const prompt = hook.prompt.replace('$ARGUMENTS', JSON.stringify(input, null, 2));
+    // Replace $ARGUMENTS placeholder with input JSON
+    const evaluationPrompt = hook.prompt.replace('$ARGUMENTS', JSON.stringify(input, null, 2));
 
     console.log(`[Hooks] Executing prompt-based hook with thinking mechanism`);
 

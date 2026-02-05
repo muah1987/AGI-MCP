@@ -50,6 +50,117 @@ Skills coordinate multiple subagents and provide reusable workflows for complex 
 **Purpose**: Manages goal-oriented task execution through GOTCHA framework
 
 **Capabilities**:
+- Coordinates goal setting and tracking
+- Manages observations and thought processes
+- Orchestrates command execution
+- Tracks hypotheses and assessments
+
+**Usage**: For goal-driven workflows requiring structured cognitive processing
+
+#### 4. code-quality
+**Purpose**: Ensures code meets quality standards and best practices
+
+**Checks**:
+- Code readability and maintainability
+- Security vulnerabilities
+- Performance considerations
+- Test coverage
+- Documentation completeness
+
+**Usage**: For automated code review and quality assurance
+
+#### 5. plan-with-team ✨ NEW
+**Purpose**: Creates detailed engineering implementation plans with team orchestration
+
+**Features**:
+- Analyzes user requirements and creates structured plans
+- Assigns tasks to specialized team members based on expertise
+- Defines clear, measurable acceptance criteria
+- Establishes comprehensive team orchestration strategy
+- Validates plan structure with automated hooks
+- Saves plans to `specs/` directory
+
+**Plan Document Structure**:
+- **Task Description**: Concise summary of what needs to be accomplished
+- **Objective**: Primary goal and success criteria
+- **Relevant Files**: Lists files to create, modify, or reference
+- **Step by Step Tasks**: Detailed breakdown with agent assignments and dependencies
+- **Acceptance Criteria**: Measurable completion criteria
+- **Team Orchestration**: Team members, execution strategy, coordination notes
+
+**Usage**:
+```json
+{
+  "tool": "execute_skill",
+  "arguments": {
+    "skill_name": "plan-with-team",
+    "context": {
+      "user_prompt": "Implement user authentication system with JWT tokens",
+      "orchestration_prompt": "Use security-focused approach with phased rollout"
+    }
+  }
+}
+```
+
+**Output**: Creates `specs/<descriptive-name>.md` with complete implementation blueprint.
+
+**Validation**: Automatically validates that the plan contains all required sections using hooks.
+
+**Example Output**:
+```markdown
+# Implementation Plan: User Authentication System
+
+## Task Description
+Implement secure user authentication with JWT tokens...
+
+## Objective
+Create production-ready auth system that...
+
+## Relevant Files
+- **Create**: `src/auth/auth-service.ts` - Core authentication logic
+- **Modify**: `src/app.ts` - Register auth routes
+...
+
+## Step by Step Tasks
+1. **Design Database Schema** (Assigned to: architect)
+   - Design users and sessions tables
+   - Dependencies: None
+
+2. **Implement Password Hashing** (Assigned to: security-engineer)
+   - Create bcrypt password service
+   - Dependencies: Task 1
+...
+
+## Acceptance Criteria
+- [ ] Users can register and login
+- [ ] JWT tokens validated correctly
+- [ ] All tests pass
+...
+
+## Team Orchestration
+
+### Team Members
+- **architect** - Database design specialist
+- **security-engineer** - Security and cryptography expert
+- **backend-developer** - TypeScript/Express specialist
+...
+
+### Execution Strategy
+**Phase 1: Foundation** (Sequential)
+1. Architect designs schema
+2. Security-engineer implements hashing
+...
+```
+
+**Hooks**: Validates plan files using:
+- `validate_new_file.py` - Ensures plan file created in specs/
+- `validate_file_contains.py` - Verifies all required sections present
+
+**Team Member Discovery**: Reads from `.claude/agents/team/*.md` to understand available specialists.
+
+## MCP Tools
+
+**Capabilities**:
 - Guides goal-oriented task execution
 - Ensures all GOTCHA layers are utilized
 - Forms and validates hypotheses

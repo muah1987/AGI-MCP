@@ -158,9 +158,6 @@ Or using locally built image:
   }
 }
 ```
-  }
-}
-```
 
 ### Direct Execution
 

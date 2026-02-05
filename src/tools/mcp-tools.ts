@@ -257,7 +257,6 @@ export class MCPTools {
         return this.handleExecuteSubagent(args);
       case 'list_subagents':
         return this.handleListSubagents();
-        return this.handleGetSessionSummary();
       default:
         throw new Error(`Unknown tool: ${name}`);
     }

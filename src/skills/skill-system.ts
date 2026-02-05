@@ -79,6 +79,10 @@ export class SkillSystem {
     const projectSkillsDir = join(this.projectDir, '.agi-mcp', 'skills');
     this.loadSkillsFromDirectory(projectSkillsDir, 'project');
 
+    // Also check .claude/skills/ for Claude Code compatibility
+    const claudeSkillsDir = join(this.projectDir, '.claude', 'skills');
+    this.loadSkillsFromDirectory(claudeSkillsDir, 'claude');
+
     console.log(`[Skills] Loaded ${this.skills.size} skill(s)`);
   }
 
