@@ -1,0 +1,99 @@
+name: Create and Push Version Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to tag (leave empty to use package.json version)'
+        required: false
+        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version from package.json or input
+        id: get_version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=$(node -p "require('./package.json').version")
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+          echo "Tag: v$VERSION"
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          TAG="v${{ steps.get_version.outputs.version }}"
+          if git ls-remote --tags origin | grep -q "refs/tags/${TAG}$"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag $TAG already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Tag $TAG does not exist"
+          fi
+
+      - name: Create and push tag
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          TAG="${{ steps.get_version.outputs.tag }}"
+          VERSION="${{ steps.get_version.outputs.version }}"
+          
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Create annotated tag
+          git tag -a "$TAG" -m "Release version $VERSION"
+          
+          # Push tag
+          git push origin "$TAG"
+          
+          echo "✓ Successfully created and pushed tag $TAG"
+
+      - name: Tag already exists
+        if: steps.check_tag.outputs.exists == 'true'
+        run: |
+          TAG="${{ steps.get_version.outputs.tag }}"
+          echo "⚠️ Tag $TAG already exists. Skipping tag creation."
+          echo "If you want to update this tag, delete it first with:"
+          echo "  git push --delete origin $TAG"
+
+      - name: Summary
+        run: |
+          TAG="${{ steps.get_version.outputs.tag }}"
+          VERSION="${{ steps.get_version.outputs.version }}"
+          
+          echo "## Tag Creation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: $VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: $TAG" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.check_tag.outputs.exists }}" == "true" ]; then
+            echo "- **Status**: ⚠️ Tag already exists" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: ✅ Tag created and pushed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "This will trigger the Docker Build workflow to:" >> $GITHUB_STEP_SUMMARY
+            echo "- Build the Docker image" >> $GITHUB_STEP_SUMMARY
+            echo "- Tag it with \`latest\`, \`$VERSION\`, and \`$TAG\`" >> $GITHUB_STEP_SUMMARY
+            echo "- Push to DockerHub" >> $GITHUB_STEP_SUMMARY
+          fi
