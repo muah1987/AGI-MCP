@@ -1,0 +1,2 @@
+# AGI-MCP
+AGI-MCP tool
