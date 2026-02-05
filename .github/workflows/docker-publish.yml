@@ -25,16 +25,22 @@ jobs:
       - name: Extract metadata for Docker
         id: meta
         run: |
-          # Extract version from package.json
-          VERSION=$(grep '"version"' package.json | head -1 | sed 's/.*"version": "\(.*\)".*/\1/')
+          # Validate required secrets
+          DOCKER_USERNAME="${{ secrets.DOCKER_LOGIN }}"
+          if [ -z "$DOCKER_USERNAME" ]; then
+            echo "Error: DOCKER_LOGIN secret is not set"
+            exit 1
+          fi
+          
+          # Extract version from package.json using jq for reliable parsing
+          VERSION=$(jq -r '.version' package.json)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           
           # Determine Docker tags
-          DOCKER_USERNAME="${{ secrets.DOCKER_LOGIN }}"
           TAGS="${DOCKER_USERNAME}/${IMAGE_NAME}:latest"
           
           # Add version tag if available
-          if [ -n "$VERSION" ]; then
+          if [ -n "$VERSION" ] && [ "$VERSION" != "null" ]; then
             TAGS="${TAGS},${DOCKER_USERNAME}/${IMAGE_NAME}:${VERSION}"
           fi
           
