@@ -48,46 +48,186 @@ pm2 start dist/index.js --name agi-mcp
 
 ### Docker Deployment
 
-```dockerfile
-FROM node:20-alpine
+AGI-MCP includes production-ready Docker configuration with multi-stage builds for optimal image size.
 
-WORKDIR /app
+#### Using Pre-built Image from Docker Hub
 
-# Copy package files
-COPY package*.json ./
+The fastest way to get started:
 
-# Install production dependencies only
-RUN npm ci --only=production
+```bash
+# Pull the latest image
+docker pull muah1987/agi-mcp:latest
 
-# Copy application
-COPY dist/ ./dist/
+# Run the container
+docker run -i --rm muah1987/agi-mcp:latest
 
-# Create data and memory directories
-RUN mkdir -p data memory/logs
-
-# Set environment
-ENV NODE_ENV=production
-
-# Expose port (if needed for monitoring)
-EXPOSE 3000
-
-# Run server
-CMD ["node", "dist/index.js"]
+# Or with persistent storage
+docker run -i --rm \
+  -v agi-mcp-data:/app/data \
+  -v agi-mcp-logs:/app/memory/logs \
+  muah1987/agi-mcp:latest
 ```
 
-Build and run:
+#### Building Locally with Dockerfile
+
+The included Dockerfile uses multi-stage builds for security and efficiency:
 
 ```bash
 # Build image
 docker build -t agi-mcp:latest .
 
 # Run container
+docker run -i --rm agi-mcp:latest
+```
+
+#### Using Docker Compose
+
+For easier management with persistent volumes:
+
+```bash
+# Start server
+docker-compose up -d
+
+# View logs
+docker-compose logs -f agi-mcp
+
+# Stop server
+docker-compose down
+
+# Rebuild and restart
+docker-compose up -d --build
+```
+
+#### Testing Docker Build
+
+Use the included test script to validate the Docker build:
+
+```bash
+# Run comprehensive Docker tests
+./test-docker.sh
+```
+
+The test script validates:
+- ✓ Docker image builds successfully
+- ✓ Container starts without errors
+- ✓ Health checks pass
+- ✓ Memory infrastructure initializes
+- ✓ Data directories are created
+- ✓ TypeScript build artifacts exist
+- ✓ MCP tools are available
+
+#### Publishing to Docker Hub
+
+To publish your own version to Docker Hub:
+
+1. **Create environment configuration:**
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit .env and set:
+# DOCKER_USERNAME=your-dockerhub-username
+# DOCKER_TOKEN=your-access-token
+# DOCKER_IMAGE_NAME=agi-mcp
+# DOCKER_IMAGE_TAG=latest
+```
+
+2. **Get Docker Hub access token:**
+- Go to https://hub.docker.com/settings/security
+- Click "New Access Token"
+- Give it a description (e.g., "AGI-MCP Push")
+- Copy the token to your .env file
+
+3. **Build and push:**
+```bash
+# Run the push script
+./push-docker.sh
+```
+
+The script will:
+- Build the Docker image
+- Tag with version from package.json
+- Login to Docker Hub
+- Push both `latest` and version tags
+- Logout automatically
+
+4. **Your image is now public:**
+```bash
+docker pull your-username/agi-mcp:latest
+```
+
+#### Docker Configuration
+
+**Dockerfile features:**
+- Multi-stage build (builder + production)
+- Node.js 20 Alpine (minimal footprint)
+- Non-root user for security
+- Health checks included
+- Optimized layers for caching
+
+**docker-compose.yml features:**
+- Persistent volumes for data and logs
+- Resource limits (2 CPU, 2GB RAM)
+- Auto-restart policy
+- Health monitoring
+- Structured logging (10MB max, 3 files)
+
+#### MCP Client with Docker
+
+Configure your MCP client to use the Docker container:
+
+**Using Docker Hub image:**
+```json
+{
+  "mcpServers": {
+    "agi-mcp": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "muah1987/agi-mcp:latest"]
+    }
+  }
+}
+```
+
+**Using local image:**
+```json
+{
+  "mcpServers": {
+    "agi-mcp": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "agi-mcp:latest"]
+    }
+  }
+}
+```
+
+**Or with docker-compose:**
+```json
+{
+  "mcpServers": {
+    "agi-mcp": {
+      "command": "docker-compose",
+      "args": ["run", "--rm", "agi-mcp"]
+    }
+  }
+}
+```
+
+#### Production Docker Deployment
+
+```bash
+# Build production image
+docker build -t agi-mcp:production .
+
+# Run with volume mounts for persistence
 docker run -d \
-  --name agi-mcp \
-  -v $(pwd)/data:/app/data \
-  -v $(pwd)/memory:/app/memory \
-  -v $(pwd)/.agi-mcp:/app/.agi-mcp \
-  agi-mcp:latest
+  --name agi-mcp-prod \
+  --restart unless-stopped \
+  -v agi-mcp-data:/app/data \
+  -v agi-mcp-logs:/app/memory/logs \
+  agi-mcp:production
+
+# Or use docker-compose for production
+docker-compose up -d
 ```
 
 ### Kubernetes Deployment

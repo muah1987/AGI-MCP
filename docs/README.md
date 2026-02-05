@@ -14,10 +14,12 @@ Welcome to the AGI-MCP documentation! This directory contains comprehensive guid
 
 ### Core Documentation
 
-- **[API.md](API.md)** - Complete API reference for all 12 MCP tools
+- **[API.md](API.md)** - Complete API reference for all 16 MCP tools
   - GOTCHA Framework tools (7 tools)
   - ATLAS Process tools (2 tools)
   - Memory Management tools (3 tools)
+  - Skill System tools (2 tools)
+  - Subagent tools (2 tools)
   - Input schemas, return types, and examples
 
 - **[MEMORY_SYSTEM.md](MEMORY_SYSTEM.md)** - Memory architecture and database
@@ -27,18 +29,49 @@ Welcome to the AGI-MCP documentation! This directory contains comprehensive guid
   - Query examples and optimization
 
 - **[AGENTS.md](AGENTS.md)** - Subagent system documentation
-  - Built-in subagents (explore, general-purpose, task-executor, code-reviewer)
+  - 10 specialized subagents (explore, debug-engineer, architect, etc.)
   - Creating custom subagents
   - Configuration and lifecycle
   - Best practices
 
+- **[SKILLS.md](SKILLS.md)** - Skill system and orchestration
+  - Built-in skills (problem-solver, atlas-orchestrator, gotcha-coordinator)
+  - Trigger-based routing
+  - Priority management
+  - Human interaction controls
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture and design
+  - GOTCHA Framework details
+  - ATLAS Process integration
+  - Thinking mechanism
+  - Database architecture
+
+- **[ADVANCED.md](ADVANCED.md)** - Advanced features
+  - Hook system (11 lifecycle events)
+  - Thinking mechanism internals
+  - Custom subagent creation
+  - Advanced configurations
+
+- **[USAGE.md](USAGE.md)** - Comprehensive usage guide
+  - Common workflows
+  - Best practices
+  - Examples and patterns
+  - Troubleshooting
+
+- **[QUICKREF.md](QUICKREF.md)** - Quick reference
+  - Tool cheat sheet
+  - Common commands
+  - Configuration snippets
+
 ### Deployment
 
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide
-  - MCP client configuration
-  - Production deployment options (Docker, Kubernetes, PM2)
+  - MCP client configuration (Claude Desktop, Cline)
+  - Docker deployment (Dockerfile, docker-compose)
+  - Production deployment options (Kubernetes, PM2)
   - Security considerations
   - Monitoring and backup strategies
+  - Testing with test-docker.sh script
 
 ## 🚀 Quick Links
 
@@ -75,8 +108,13 @@ AGI-MCP is a comprehensive MCP server implementing:
 - **ATLAS Process** - 5-step task execution methodology
   - Analyze, Task Breakdown, Learn, Act, Synthesize
 
+- **Skill System** - Intelligent task orchestration
+  - 4 built-in skills with trigger-based routing
+  - Priority management and human interaction controls
+
 - **Subagent System** - Specialized AI assistants
-  - 4 built-in subagents + custom subagent support
+  - 10 specialized subagents (explore, debug-engineer, architect, etc.)
+  - Custom subagent support
 
 - **Memory System** - Persistent SQLite storage
   - Full GOTCHA and ATLAS history
@@ -84,6 +122,11 @@ AGI-MCP is a comprehensive MCP server implementing:
 
 - **Hook System** - Lifecycle customization
   - 11 hook events for automation
+  - Command and prompt-based hooks
+
+- **Thinking Mechanism** - Purpose-based filtering
+  - Integrated into all agents
+  - Safety and constraint validation
 
 ## 🔧 Tools Summary
 
@@ -92,8 +135,10 @@ AGI-MCP is a comprehensive MCP server implementing:
 | GOTCHA Framework | 7 tools | Cognitive operations (goals, observations, thoughts, commands, hypotheses, assessments, full processing) |
 | ATLAS Process | 2 tools | Task execution (execute task, get history) |
 | Memory Management | 3 tools | Data retrieval (active goals, memory queries, session summary) |
+| Skill System | 2 tools | Orchestration (execute skill, list skills) |
+| Subagent System | 2 tools | Delegation (execute subagent, list subagents) |
 
-**Total: 12 MCP Tools**
+**Total: 16 MCP Tools**
 
 ## 📝 Documentation Standards
 

@@ -1,0 +1,62 @@
+# AGI-MCP Docker Compose Configuration
+# Provides easy deployment and testing of the MCP server
+
+version: '3.8'
+
+services:
+  agi-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agi-mcp:latest
+    container_name: agi-mcp-server
+    
+    # Persistent storage for database and logs
+    volumes:
+      - agi-mcp-data:/app/data
+      - agi-mcp-logs:/app/memory/logs
+    
+    # Environment variables
+    environment:
+      - NODE_ENV=production
+      - AGI_MCP_DATA_DIR=/app/data
+      - AGI_MCP_MEMORY_DIR=/app/memory
+      - TZ=UTC
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('./dist/index.js')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    
+    # Stdin/stdout for MCP protocol
+    stdin_open: true
+    tty: true
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  agi-mcp-data:
+    driver: local
+  agi-mcp-logs:
+    driver: local

@@ -70,6 +70,8 @@ Automatic initialization and management:
 
 ## 📦 Installation
 
+### Standard Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/muah1987/AGI-MCP.git
@@ -85,9 +87,36 @@ npm run build
 npm test
 ```
 
+### Docker Installation
+
+```bash
+# Option 1: Pull from Docker Hub (recommended)
+docker pull muah1987/agi-mcp:latest
+
+# Option 2: Build locally
+docker build -t agi-mcp:latest .
+
+# Option 3: Use docker-compose
+docker-compose build
+
+# Run the test script to validate the build
+./test-docker.sh
+```
+
+### Publishing to Docker Hub
+
+```bash
+# 1. Create .env file with your credentials
+cp .env.example .env
+# Edit .env and add your DOCKER_USERNAME and DOCKER_TOKEN
+
+# 2. Build and push to Docker Hub
+./push-docker.sh
+```
+
 ## 🚀 Quick Start
 
-### As MCP Server
+### As MCP Server (Native)
 
 Add to your MCP client configuration (e.g., Claude Desktop, Cline):
 
@@ -102,10 +131,48 @@ Add to your MCP client configuration (e.g., Claude Desktop, Cline):
 }
 ```
 
+### As MCP Server (Docker)
+
+Using Docker for isolated deployment:
+
+```json
+{
+  "mcpServers": {
+    "agi-mcp": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "muah1987/agi-mcp:latest"]
+    }
+  }
+}
+```
+
+Or using locally built image:
+
+```json
+{
+  "mcpServers": {
+    "agi-mcp": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "agi-mcp:latest"]
+    }
+  }
+}
+```
+  }
+}
+```
+
 ### Direct Execution
 
 ```bash
+# Native
 npm start
+
+# Docker
+docker run -i agi-mcp:latest
+
+# Docker Compose
+docker-compose up
 ```
 
 ### First Session
@@ -145,13 +212,26 @@ On first run, AGI-MCP automatically:
 
 ## 📚 Documentation
 
-- **[ADVANCED.md](ADVANCED.md)** - Thinking Mechanism, Hooks, and Subagents
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture and design
-- **[USAGE.md](USAGE.md)** - Comprehensive usage guide with examples
-- **[QUICKREF.md](QUICKREF.md)** - Quick reference for developers
+### Core Documentation
+- **[README.md](README.md)** - This file, project overview
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community standards
+- **[SECURITY.md](SECURITY.md)** - Security policy and reporting
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history
+- **[LICENSE](LICENSE)** - MIT License
+
+### Technical Documentation (docs/)
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and design
+- **[docs/ADVANCED.md](docs/ADVANCED.md)** - Thinking Mechanism, Hooks, and Subagents
+- **[docs/USAGE.md](docs/USAGE.md)** - Comprehensive usage guide with examples
+- **[docs/SKILLS.md](docs/SKILLS.md)** - Skill system and orchestration
+- **[docs/QUICKREF.md](docs/QUICKREF.md)** - Quick reference for developers
 - **[docs/AGENTS.md](docs/AGENTS.md)** - Subagent documentation
 - **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)** - Quickstart guide
-- **[docs/API.md](docs/API.md)** - API documentation
+- **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Deployment guide
+- **[docs/API.md](docs/API.md)** - Complete API documentation
+- **[docs/MEMORY_SYSTEM.md](docs/MEMORY_SYSTEM.md)** - Memory architecture
+- **[docs/PROJECT_SUMMARY.md](docs/PROJECT_SUMMARY.md)** - Project statistics
 
 ## 🏗️ Architecture
 

@@ -1,0 +1,75 @@
+# AGI-MCP Docker Ignore File
+
+# Node modules (will be installed in container)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build outputs (will be built in container)
+dist/
+*.tsbuildinfo
+
+# Database files (will be created at runtime)
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# Log files
+memory/logs/*.log
+*.log
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation (not needed in runtime)
+docs/
+*.md
+!memory/MEMORY.md
+
+# GitHub files
+.github/
+
+# Test files
+*.test.ts
+*.spec.ts
+__tests__/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# CI/CD files
+.travis.yml
+.gitlab-ci.yml
+azure-pipelines.yml
+
+# Package manager files
+package-lock.json.bak
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Example and sample files
+examples/
+example-*.json
+!example-mcp-config.json
