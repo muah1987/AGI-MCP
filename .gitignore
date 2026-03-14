@@ -5,3 +5,8 @@ dist/
 *.sqlite
 *.db
 .env
+
+# GitHub internal directories (for agent memory and improvement)
+.github/spec/
+.github/changelogs/
+.github/memory/
