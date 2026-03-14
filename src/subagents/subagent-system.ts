@@ -4,11 +4,22 @@ import { ATLASProcess } from '../atlas/process.js';
 import { HookConfig } from '../hooks/hook-system.js';
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join } from 'path';
+import * as yaml from 'js-yaml';
 
 /**
  * Subagent System for AGI-MCP Server
  * Provides specialized AI assistants for specific tasks
  */
+
+/**
+ * Custom error for subagent-related failures
+ */
+export class SubagentError extends Error {
+  constructor(message: string, public code: string, public details?: any) {
+    super(message);
+    this.name = 'SubagentError';
+  }
+}
 
 export interface SubagentConfig {
   name: string;
@@ -382,7 +393,7 @@ Always prioritize:
         try {
           const content = readFileSync(join(dir, file), 'utf-8');
           
-          // Parse frontmatter manually (simplified version)
+          // Parse frontmatter using js-yaml
           const frontmatterMatch = content.match(/^---\n([\s\S]+?)\n---\n([\s\S]*)$/);
           if (!frontmatterMatch) {
             console.warn(`[Subagents] No frontmatter found in ${file}`);
@@ -390,26 +401,39 @@ Always prioritize:
           }
 
           const [, frontmatterText, systemPrompt] = frontmatterMatch;
-          const data: any = {};
           
-          // Simple YAML parsing
-          frontmatterText.split('\n').forEach(line => {
-            const match = line.match(/^(\w+):\s*(.+)$/);
-            if (match) {
-              const [, key, value] = match;
-              data[key] = value.trim();
-            }
-          });
+          // Parse YAML with proper library
+          let data: any;
+          try {
+            data = yaml.load(frontmatterText);
+          } catch (yamlError) {
+            throw new SubagentError(
+              `Failed to parse YAML in ${file}`,
+              'YAML_PARSE_ERROR',
+              { file, error: yamlError }
+            );
+          }
+          
+          if (!data || typeof data !== 'object') {
+            throw new SubagentError(
+              `Invalid frontmatter structure in ${file}`,
+              'INVALID_FRONTMATTER',
+              { file }
+            );
+          }
 
           const config: SubagentConfig = {
             name: data.name || file.replace('.md', ''),
             description: data.description || '',
             systemPrompt: systemPrompt.trim(),
-            tools: data.tools ? data.tools.split(',').map((t: string) => t.trim()) : undefined,
-            disallowedTools: data.disallowedTools ? data.disallowedTools.split(',').map((t: string) => t.trim()) : undefined,
+            tools: Array.isArray(data.tools) ? data.tools : 
+                   (typeof data.tools === 'string' ? data.tools.split(',').map((t: string) => t.trim()) : undefined),
+            disallowedTools: Array.isArray(data.disallowedTools) ? data.disallowedTools :
+                           (typeof data.disallowedTools === 'string' ? data.disallowedTools.split(',').map((t: string) => t.trim()) : undefined),
             model: data.model || 'inherit',
             permissionMode: data.permissionMode || 'default',
-            skills: data.skills ? data.skills.split(',').map((s: string) => s.trim()) : undefined,
+            skills: Array.isArray(data.skills) ? data.skills :
+                   (typeof data.skills === 'string' ? data.skills.split(',').map((s: string) => s.trim()) : undefined),
             color: data.color
           };
 
@@ -447,16 +471,20 @@ Always prioritize:
 
   /**
    * Create a new subagent instance
+   * @throws {SubagentError} When subagent is not found
    */
   async createInstance(
     subagentName: string,
     task: string,
     parentSessionId?: string
-  ): Promise<SubagentInstance | null> {
+  ): Promise<SubagentInstance> {
     const config = this.getSubagent(subagentName);
     if (!config) {
-      console.error(`[Subagents] Subagent not found: ${subagentName}`);
-      return null;
+      throw new SubagentError(
+        `Subagent not found: ${subagentName}`,
+        'SUBAGENT_NOT_FOUND',
+        { subagentName, availableSubagents: Array.from(this.subagents.keys()) }
+      );
     }
 
     const instanceId = `subagent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;

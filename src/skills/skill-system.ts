@@ -8,6 +8,17 @@ import { MemoryDatabase } from '../database/memory-db.js';
 import { ThinkingMechanism } from '../gotcha/thinking.js';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join } from 'path';
+import * as yaml from 'js-yaml';
+
+/**
+ * Custom error for skill-related failures
+ */
+export class SkillError extends Error {
+  constructor(message: string, public code: string, public details?: any) {
+    super(message);
+    this.name = 'SkillError';
+  }
+}
 
 export interface SkillConfig {
   name: string;
@@ -289,22 +300,35 @@ Always provide specific, actionable feedback.`,
       }
 
       const [, frontmatter, systemPrompt] = frontmatterMatch;
-      const config: any = {};
+      
+      // Parse YAML with proper library
+      let config: any;
+      try {
+        config = yaml.load(frontmatter);
+      } catch (yamlError) {
+        throw new SkillError(
+          `Failed to parse skill YAML from ${source}`,
+          'YAML_PARSE_ERROR',
+          { source, error: yamlError }
+        );
+      }
+      
+      if (!config || typeof config !== 'object') {
+        throw new SkillError(
+          `Invalid frontmatter structure in ${source}`,
+          'INVALID_FRONTMATTER',
+          { source }
+        );
+      }
 
-      // Simple YAML parsing (in production, use a proper YAML parser)
-      frontmatter.split('\n').forEach(line => {
-        const [key, ...valueParts] = line.split(':');
-        if (key && valueParts.length > 0) {
-          const value = valueParts.join(':').trim();
-          
-          // Handle arrays
-          if (value.startsWith('[') && value.endsWith(']')) {
-            config[key.trim()] = value.slice(1, -1).split(',').map(v => v.trim());
-          } else {
-            config[key.trim()] = value;
-          }
-        }
-      });
+      // Validate required fields
+      if (!config.name || !config.description) {
+        throw new SkillError(
+          `Missing required fields (name, description) in ${source}`,
+          'MISSING_REQUIRED_FIELDS',
+          { source, config }
+        );
+      }
 
       return {
         name: config.name,
@@ -317,9 +341,12 @@ Always provide specific, actionable feedback.`,
         subagents: config.subagents,
         triggers: config.triggers,
         hooks: config.hooks,
-        once: config.once === 'true'
+        once: config.once === true || config.once === 'true'
       };
     } catch (error) {
+      if (error instanceof SkillError) {
+        throw error;
+      }
       console.error('[Skills] Error parsing skill file:', error);
       return null;
     }

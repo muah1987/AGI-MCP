@@ -132,9 +132,15 @@ export class ATLASProcess {
     };
 
     const stepId = this.db.addATLASStep('Synthesize', task.id, JSON.stringify(synthesis));
+    
+    // Calculate success rate, handling division by zero
+    const successRate = synthesis.totalResults > 0 
+      ? synthesis.successfulActions / synthesis.totalResults 
+      : 0;
+    
     this.gotcha.assess(
       `Task ${task.id} completed`,
-      synthesis.successfulActions / synthesis.totalResults,
+      successRate,
       synthesis.learnings
     );
     
