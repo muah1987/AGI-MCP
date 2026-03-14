@@ -288,6 +288,24 @@ Always provide specific, actionable feedback.`,
   }
 
   /**
+   * Helper function to parse boolean values from YAML
+   * Handles: true, false, 'true', 'false', 'yes', 'no', '1', '0', 'on', 'off'
+   */
+  private parseBoolean(value: any): boolean {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+    if (typeof value === 'string') {
+      const normalized = value.toLowerCase().trim();
+      return normalized === 'true' || normalized === 'yes' || normalized === '1' || normalized === 'on';
+    }
+    if (typeof value === 'number') {
+      return value !== 0;
+    }
+    return false;
+  }
+
+  /**
    * Parse skill markdown file with frontmatter
    */
   private parseSkillFile(content: string, source: string): SkillConfig | null {
@@ -341,7 +359,7 @@ Always provide specific, actionable feedback.`,
         subagents: config.subagents,
         triggers: config.triggers,
         hooks: config.hooks,
-        once: config.once === true || config.once === 'true'
+        once: this.parseBoolean(config.once)
       };
     } catch (error) {
       if (error instanceof SkillError) {

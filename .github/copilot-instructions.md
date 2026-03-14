@@ -194,7 +194,7 @@ The following directories are in `.gitignore` and should NOT be committed:
 - `.github/changelogs/`
 - `.github/memory/`
 
-These are for GitHub's internal use to improve agent performance and should remain local.
+These are project-specific agent working directories used by Copilot and other AI agents to maintain context, learn from past sessions, and improve over time. They should remain local to your development environment and not be committed to version control.
 
 ## Questions?
 

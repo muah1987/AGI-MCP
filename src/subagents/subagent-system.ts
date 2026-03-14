@@ -379,6 +379,19 @@ Always prioritize:
   }
 
   /**
+   * Helper function to parse array or comma-separated string values
+   */
+  private parseArrayOrCommaSeparated(value: any): string[] | undefined {
+    if (Array.isArray(value)) {
+      return value;
+    }
+    if (typeof value === 'string') {
+      return value.split(',').map((item: string) => item.trim());
+    }
+    return undefined;
+  }
+
+  /**
    * Load subagents from a directory
    */
   private loadSubagentsFromDirectory(dir: string, source: string): void {
@@ -426,14 +439,11 @@ Always prioritize:
             name: data.name || file.replace('.md', ''),
             description: data.description || '',
             systemPrompt: systemPrompt.trim(),
-            tools: Array.isArray(data.tools) ? data.tools : 
-                   (typeof data.tools === 'string' ? data.tools.split(',').map((t: string) => t.trim()) : undefined),
-            disallowedTools: Array.isArray(data.disallowedTools) ? data.disallowedTools :
-                           (typeof data.disallowedTools === 'string' ? data.disallowedTools.split(',').map((t: string) => t.trim()) : undefined),
+            tools: this.parseArrayOrCommaSeparated(data.tools),
+            disallowedTools: this.parseArrayOrCommaSeparated(data.disallowedTools),
             model: data.model || 'inherit',
             permissionMode: data.permissionMode || 'default',
-            skills: Array.isArray(data.skills) ? data.skills :
-                   (typeof data.skills === 'string' ? data.skills.split(',').map((s: string) => s.trim()) : undefined),
+            skills: this.parseArrayOrCommaSeparated(data.skills),
             color: data.color
           };
 
